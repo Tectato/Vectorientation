@@ -1,5 +1,6 @@
 package vectorientation.mixin;
 
+import net.minecraft.registry.Registries;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -41,8 +42,12 @@ public class FallingBlockRendererMixin {
 		float y = vel.y();
 		y -= .04D * g;
 		y *= .98D;
-		float speed = Vectorientation.squetch ? 0.75f + (float) Math.sqrt(vel.x() * vel.x() + y * y + vel.z() * vel.z()) : 1;
-		float angle = (float) Math.acos(y);
+		vel.y = y;
+		boolean blacklisted = Vectorientation.BLACKLIST.contains(Registries.BLOCK.getId(fallingBlockEntity.getBlockState().getBlock()));
+		float speed = (!blacklisted && Vectorientation.SQUETCH) ?
+				(float) (Vectorientation.MIN_WARP + Vectorientation.WARP_FACTOR * vel.length())
+				: 1.0f;
+		float angle = (float) Math.acos(vel.normalize().y);
 		Vector3f axis = new Vector3f(-1 * vel.z(), 0, vel.x());
 		Quaternionf rot = new Quaternionf();
 		if(axis.length() > .01f){

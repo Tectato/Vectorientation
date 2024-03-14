@@ -1,4 +1,6 @@
-package vectorientation.simpleLibs.simpleConfig;
+package vectorientation.main.config;
+
+// SimpleConfig provided by magistermaks at https://github.com/magistermaks/fabric-simplelibs
 /*
  * Copyright (c) 2021 magistermaks
  *
@@ -30,14 +32,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class SimpleConfig {
 
     private static final Logger LOGGER = LogManager.getLogger("SimpleConfig");
     private final HashMap<String, String> config = new HashMap<>();
     private final ConfigRequest request;
+    private Set<String> edited;
     private boolean broken = false;
 
     public interface DefaultConfig {
@@ -50,7 +52,7 @@ public class SimpleConfig {
 
     public static class ConfigRequest {
 
-        private final File file;
+        private File file;
         private final String filename;
         private DefaultConfig provider;
 
@@ -119,6 +121,7 @@ public class SimpleConfig {
         for( int line = 1; reader.hasNextLine(); line ++ ) {
             parseConfigEntry( reader.nextLine(), line );
         }
+        reader.close();
     }
 
     private void parseConfigEntry( String entry, int line ) {
@@ -132,7 +135,36 @@ public class SimpleConfig {
         }
     }
 
+    private void writeConfig() throws IOException {
+        Scanner reader = new Scanner( request.file );
+        String newConfig = "";
+
+        while(reader.hasNextLine()) {
+            String entry = reader.nextLine();
+            if(!entry.isEmpty() && !entry.startsWith("#")){
+                String[] parts = entry.split("=", 2);
+                if( parts.length == 2 && edited.contains(parts[0])) {
+                    newConfig += (parts[0]+"="+config.get(parts[0])+"\n");
+                    edited.remove(parts[0]);
+                } else {
+                    newConfig += (entry) + "\n";
+                }
+            } else {
+                newConfig += (entry) + "\n";
+            }
+        }
+        reader.close();
+
+        request.file.delete();
+        request.file.getParentFile().mkdirs();
+        Files.createFile( request.file.toPath() );
+        PrintWriter writer = new PrintWriter(request.file, "UTF-8");
+        writer.write( newConfig );
+        writer.close();
+    }
+
     private SimpleConfig( ConfigRequest request ) {
+        this.edited = new HashSet<>();
         this.request = request;
         String identifier = "Config '" + request.filename + "'";
 
@@ -172,6 +204,33 @@ public class SimpleConfig {
         return config.get( key );
     }
 
+    public void set(String key, String value){
+        config.replace(key, value);
+        edited.add(key);
+    }
+
+    public void writeToFile(){
+        try {
+            writeConfig();
+        } catch (IOException e){
+            System.out.println("Could not write to config file!");
+            e.printStackTrace();
+        }
+    }
+
+    public void reconstructFile(){
+        if (!broken) edited.addAll(config.keySet());
+        try {
+            Files.deleteIfExists(request.file.toPath());
+            createConfig();
+            writeToFile();
+            loadConfig();
+            broken = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Returns string value from config corresponding to the given
      * key, or the default string if the key is missing.
@@ -180,6 +239,7 @@ public class SimpleConfig {
      */
     public String getOrDefault( String key, String def ) {
         String val = get(key);
+        if (val == null) broken = true;
         return val == null ? def : val;
     }
 
@@ -193,6 +253,7 @@ public class SimpleConfig {
         try {
             return Integer.parseInt( get(key) );
         } catch (Exception e) {
+            broken = true;
             return def;
         }
     }
@@ -208,6 +269,7 @@ public class SimpleConfig {
         if( val != null ) {
             return val.equalsIgnoreCase("true");
         }
+        broken = true;
 
         return def;
     }
@@ -222,6 +284,7 @@ public class SimpleConfig {
         try {
             return Double.parseDouble( get(key) );
         } catch (Exception e) {
+            broken = true;
             return def;
         }
     }
