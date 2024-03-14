@@ -186,7 +186,7 @@ public class StringListWidget extends ClickableWidget {
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         slider.render(context, mouseX, mouseY, delta);
     }
 
@@ -213,9 +213,9 @@ public class StringListWidget extends ClickableWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if(slider.mouseScrolled(mouseX, mouseY, amount)) return true;
-        return super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if(slider.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     @Override

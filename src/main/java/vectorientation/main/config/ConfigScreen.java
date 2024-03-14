@@ -52,22 +52,28 @@ public class ConfigScreen extends Screen {
             backButton = ButtonWidget.builder(ScreenTexts.BACK, button -> close()).dimensions(8,8,50,20).build();
         }
         addDrawableChild(backButton);
-        toggleMinecarts = new CheckboxWidget(posX, posY, 20, 20, Text.of(""), Vectorientation.MINECARTS){
-            @Override
-            public void onPress(){
-                super.onPress();
-                Vectorientation.setConfig(Vectorientation.VAR_MINECARTS, ""+isChecked());
-            }
-        };
-        toggleMinecarts.setTooltip(Tooltip.of(Text.of("Warning: Very janky!")));
+        toggleMinecarts = CheckboxWidget.builder(Text.of(""), textRenderer)
+                .pos(posX, posY)
+                .checked(Vectorientation.MINECARTS)
+                .tooltip(Tooltip.of(Text.of("Warning: Very janky!")))
+                .callback(new CheckboxWidget.Callback() {
+                    @Override
+                    public void onValueChange(CheckboxWidget checkbox, boolean checked) {
+                        Vectorientation.setConfig(Vectorientation.VAR_MINECARTS, ""+checked);
+                    }
+                })
+                .build();
         posY += 24;
-        toggleSquish = new CheckboxWidget(posX, posY, 20, 20, Text.of(""), Vectorientation.SQUETCH){
-            @Override
-            public void onPress(){
-                super.onPress();
-                Vectorientation.setConfig(Vectorientation.VAR_SQUETCH, ""+isChecked());
-            }
-        };
+        toggleSquish = CheckboxWidget.builder(Text.of(""), textRenderer)
+                .pos(posX, posY)
+                .checked(Vectorientation.SQUETCH)
+                .callback(new CheckboxWidget.Callback() {
+                    @Override
+                    public void onValueChange(CheckboxWidget checkbox, boolean checked) {
+                        Vectorientation.setConfig(Vectorientation.VAR_SQUETCH, ""+checked);
+                    }
+                })
+                .build();
         posY += 24;
         squishMinInput = new TextFieldWidget(textRenderer, posX, posY, 64, 12, Text.of(""));
         squishMinInput.setText(""+Vectorientation.MIN_WARP);
@@ -103,7 +109,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context);
+        renderBackground(context, mouseX, mouseY, delta);
         backButton.render(context, mouseX, mouseY, delta);
         context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
         toggleMinecarts.render(context, mouseX, mouseY, delta);
@@ -138,9 +144,9 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if(blacklist.mouseScrolled(mouseX, mouseY, amount)) return true;
-        return super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if(blacklist.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     @Override
