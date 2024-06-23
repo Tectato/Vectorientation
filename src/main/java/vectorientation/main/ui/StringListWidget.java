@@ -129,7 +129,7 @@ public class StringListWidget extends ClickableWidget {
     public void setEntries(String list){
         String[] textEntries = list.replace(" ","").split(",");
         for(String entry : textEntries){
-            Identifier identifier = new Identifier(entry);
+            Identifier identifier = Identifier.of(entry);
             if(Registries.BLOCK.containsId(identifier)){
                 add(entry);
             }

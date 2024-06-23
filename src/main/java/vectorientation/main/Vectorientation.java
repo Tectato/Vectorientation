@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 public class Vectorientation implements ModInitializer {
 	private static SimpleConfig CONFIG = SimpleConfig.of( "vectorientation" ).provider( Vectorientation::provider ).request();
-	public static Identifier TNT_ID = new Identifier("minecraft:tnt");
+	public static Identifier TNT_ID = Identifier.of("minecraft:tnt");
 
 	public static String VAR_SQUETCH = "squetch";
 	public static String VAR_MIN_WARP = "min_warp";
@@ -39,7 +39,7 @@ public class Vectorientation implements ModInitializer {
 		BLACKLIST = new HashSet<>();
 		String[] entries = BLACKLIST_STRING.replace(" ","").split(",");
 		for(String entry : entries){
-			Identifier identifier = new Identifier(entry);
+			Identifier identifier = Identifier.of(entry);
 			if(Registries.BLOCK.containsId(identifier)){
 				BLACKLIST.add(identifier);
 			} else {

@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -29,7 +29,7 @@ dependencies {
             
     //Fabric api
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modApi "com.terraformersmc:modmenu:9.0.0"
+	modApi "com.terraformersmc:modmenu:11.0.0"
 	//modImplementation ":g4mespeed:1.2.1:mc1.17.1-release"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
