@@ -14,7 +14,7 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
+    "client": [
       "vectorientation.main.Vectorientation"
     ],
     "modmenu": [

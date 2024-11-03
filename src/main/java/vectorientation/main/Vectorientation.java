@@ -1,5 +1,6 @@
 package vectorientation.main;
 
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -7,7 +8,7 @@ import vectorientation.main.config.SimpleConfig;
 
 import java.util.HashSet;
 
-public class Vectorientation implements ModInitializer {
+public class Vectorientation implements ClientModInitializer {
 	private static SimpleConfig CONFIG = SimpleConfig.of( "vectorientation" ).provider( Vectorientation::provider ).request();
 	public static Identifier TNT_ID = Identifier.of("minecraft:tnt");
 
@@ -26,7 +27,7 @@ public class Vectorientation implements ModInitializer {
 	public static boolean TNT = true;
 	
 	@Override
-	public void onInitialize() {
+	public void onInitializeClient() {
 		if(CONFIG.isBroken()){
 			System.out.println("[Vectorientation] Config found to be corrupted or outdated, resetting...");
 			CONFIG.reconstructFile();

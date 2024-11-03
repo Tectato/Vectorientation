@@ -6,8 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "FallingBlockEntityRenderStateMixin",
     "FallingBlockRendererMixin",
-    "MinecartRendererMixin",
+    "TntEntityRenderStateMixin",
     "TntEntityRendererMixin"
   ],
   "injectors": {

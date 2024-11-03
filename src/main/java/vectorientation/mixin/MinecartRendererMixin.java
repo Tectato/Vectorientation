@@ -22,7 +22,7 @@ import vectorientation.main.Vectorientation;
 
 @Mixin(MinecartEntityRenderer.class)
 public class MinecartRendererMixin<T extends AbstractMinecartEntity> {
-    @Inject(
+    /*@Inject(
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/vehicle/AbstractMinecartEntity;getContainedBlock()Lnet/minecraft/block/BlockState;"
@@ -53,7 +53,7 @@ public class MinecartRendererMixin<T extends AbstractMinecartEntity> {
         if (translate) matrixStack.translate(0.0D, 0.5D, 0.0D);
         matrixStack.multiply(rot);
         if (translate) matrixStack.translate(-0.0D, -0.5D, -0.0D);
-    }
+    }*/
 
     private boolean isOnRail(T minecart){
         int posX = MathHelper.floor(minecart.getX());

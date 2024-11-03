@@ -1,5 +1,6 @@
 package vectorientation.mixin;
 
+import net.minecraft.client.render.entity.state.FallingBlockEntityRenderState;
 import net.minecraft.registry.Registries;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
@@ -14,6 +15,7 @@ import net.minecraft.client.render.entity.FallingBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.util.math.Vec3d;
+import vectorientation.access.FallingBlockEntityRenderStateAccess;
 import vectorientation.main.Vectorientation;
 
 @Mixin(FallingBlockEntityRenderer.class)
@@ -21,29 +23,18 @@ public class FallingBlockRendererMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/render/block/BlockModelRenderer;render("
-							+ "Lnet/minecraft/world/BlockRenderView;"
-							+ "Lnet/minecraft/client/render/model/BakedModel;"
-							+ "Lnet/minecraft/block/BlockState;"
-							+ "Lnet/minecraft/util/math/BlockPos;"
-							+ "Lnet/minecraft/client/util/math/MatrixStack;"
-							+ "Lnet/minecraft/client/render/VertexConsumer;"
-							+ "Z"
-							+ "Lnet/minecraft/util/math/random/Random;"
-							+ "J"
-							+ "I"
-							+ ")V"
+					target = "Lnet/minecraft/client/render/block/BlockModelRenderer;render(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLnet/minecraft/util/math/random/Random;JI)V"
 					),
-			method = "render(Lnet/minecraft/entity/FallingBlockEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+			method = "Lnet/minecraft/client/render/entity/FallingBlockEntityRenderer;render(Lnet/minecraft/client/render/entity/state/FallingBlockEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
 			)
-	public void addRotation(FallingBlockEntity fallingBlockEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
-		Vec3d velD = fallingBlockEntity.getVelocity();
+	public void addRotation(FallingBlockEntityRenderState fallingBlockEntityRenderState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+		Vec3d velD = ((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).getVelocity();
 		Vector3f vel = new Vector3f((float) velD.getX(), (float) velD.getY(), (float) velD.getZ());
 		float y = vel.y();
-		y -= .04D * g;
+		y -= .04D * ((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).getGravity();
 		y *= .98D;
 		vel.y = y;
-		boolean blacklisted = Vectorientation.BLACKLIST.contains(Registries.BLOCK.getId(fallingBlockEntity.getBlockState().getBlock()));
+		boolean blacklisted = Vectorientation.BLACKLIST.contains(Registries.BLOCK.getId(fallingBlockEntityRenderState.blockState.getBlock()));
 		float speed = (!blacklisted && Vectorientation.SQUETCH) ?
 				(float) (Vectorientation.MIN_WARP + Vectorientation.WARP_FACTOR * vel.length())
 				: 1.0f;
@@ -58,5 +49,14 @@ public class FallingBlockRendererMixin {
 		matrixStack.multiply(rot);
 		matrixStack.scale(1/speed, speed, 1/speed);
 		matrixStack.translate(-0.5D, -0.5D, -0.5D);
+	}
+
+	@Inject(
+			at = @At("HEAD"),
+			method = "Lnet/minecraft/client/render/entity/FallingBlockEntityRenderer;updateRenderState(Lnet/minecraft/entity/FallingBlockEntity;Lnet/minecraft/client/render/entity/state/FallingBlockEntityRenderState;F)V"
+	)
+	public void updateRenderState(FallingBlockEntity fallingBlockEntity, FallingBlockEntityRenderState fallingBlockEntityRenderState, float f, CallbackInfo ci){
+		((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).setVelocity(fallingBlockEntity.getVelocity());
+		((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).setGravity(fallingBlockEntity.getFinalGravity());
 	}
 }

@@ -16,7 +16,7 @@ import vectorientation.main.ui.StringListWidget;
 public class ConfigScreen extends Screen {
 
     private ButtonWidget backButton;
-    private CheckboxWidget toggleSquish, toggleMinecarts;
+    private CheckboxWidget toggleSquish;//, toggleMinecarts;
     private TextFieldWidget squishMinInput, squishFactorInput;
     private StringListWidget blacklist;
     private Screen parent;
@@ -52,7 +52,7 @@ public class ConfigScreen extends Screen {
             backButton = ButtonWidget.builder(ScreenTexts.BACK, button -> close()).dimensions(8,8,50,20).build();
         }
         addDrawableChild(backButton);
-        toggleMinecarts = CheckboxWidget.builder(Text.of(""), textRenderer)
+        /*toggleMinecarts = CheckboxWidget.builder(Text.of(""), textRenderer)
                 .pos(posX, posY)
                 .checked(Vectorientation.MINECARTS)
                 .tooltip(Tooltip.of(Text.of("Warning: Very janky!")))
@@ -63,7 +63,7 @@ public class ConfigScreen extends Screen {
                     }
                 })
                 .build();
-        posY += 24;
+        posY += 24;*/
         toggleSquish = CheckboxWidget.builder(Text.of(""), textRenderer)
                 .pos(posX, posY)
                 .checked(Vectorientation.SQUETCH)
@@ -101,7 +101,7 @@ public class ConfigScreen extends Screen {
         blacklist.setEntries(Vectorientation.BLACKLIST);
         addDrawableChild(blacklist);
 
-        addDrawableChild(toggleMinecarts);
+        //addDrawableChild(toggleMinecarts);
         addDrawableChild(toggleSquish);
         addDrawableChild(squishMinInput);
         addDrawableChild(squishFactorInput);
@@ -111,8 +111,8 @@ public class ConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context, mouseX, mouseY, delta);
         backButton.render(context, mouseX, mouseY, delta);
-        context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
-        toggleMinecarts.render(context, mouseX, mouseY, delta);
+        //context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
+        //toggleMinecarts.render(context, mouseX, mouseY, delta);
         context.drawTextWithShadow(textRenderer, "Enable Squash & stretch:", 8, toggleSquish.getY() + 4, 0xFFFFFFFF);
         toggleSquish.render(context, mouseX, mouseY, delta);
         context.drawTextWithShadow(textRenderer, "Vertical squish at 0 velocity:", 8, squishMinInput.getY(), 0xFFFFFFFF);
@@ -126,7 +126,7 @@ public class ConfigScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button){
         if(backButton.mouseClicked(mouseX, mouseY, button)) return true;
-        if(toggleMinecarts.mouseClicked(mouseX, mouseY, button)) return true;
+        //if(toggleMinecarts.mouseClicked(mouseX, mouseY, button)) return true;
         if(toggleSquish.mouseClicked(mouseX, mouseY, button)) return true;
         if(squishMinInput.mouseClicked(mouseX,mouseY,button)) {
             setFocused(squishMinInput);
