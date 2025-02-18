@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class InteractiveScrollableWidget extends ScrollableWidget {
@@ -19,7 +20,7 @@ public abstract class InteractiveScrollableWidget extends ScrollableWidget {
     }
 
     @Override
-    protected void setScrollY(double scrollY) {
+    public void setScrollY(double scrollY) {
         super.setScrollY(scrollY);
         changedListener.accept(getScrollY());
     }
@@ -31,20 +32,20 @@ public abstract class InteractiveScrollableWidget extends ScrollableWidget {
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.visible) {
-            this.drawBox(context);
+            context.drawBorder(this.getX(), this.getY(), this.getWidth(), this.getHeight(), Colors.WHITE);
             context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.width - 1, this.getY() + this.height - 1);
             this.renderContents(context, mouseX, mouseY, delta);
             context.disableScissor();
-            this.renderOverlay(context);
+            this.drawScrollbar(context);
         }
     }
 
 
     @Override
-    protected abstract int getContentsHeight();
+    protected abstract int getContentsHeightWithPadding();
     @Override
     protected abstract double getDeltaYPerScroll();
-    @Override
+
     protected abstract void renderContents(DrawContext context, int mouseX, int mouseY, float delta);
     @Override
     protected abstract void appendClickableNarrations(NarrationMessageBuilder builder);

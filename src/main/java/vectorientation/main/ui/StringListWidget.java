@@ -100,7 +100,7 @@ public class StringListWidget extends ClickableWidget {
             }
 
             @Override
-            protected int getContentsHeight() {
+            protected int getContentsHeightWithPadding() {
                 return entries.size() * ListEntry.height + addButton.getHeight() + 4;
             }
 
