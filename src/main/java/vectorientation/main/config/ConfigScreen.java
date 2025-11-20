@@ -109,7 +109,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context, mouseX, mouseY, delta);
+        context.fill(0, 0, this.width, this.height, 0x90000000);
         backButton.render(context, mouseX, mouseY, delta);
         //context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
         //toggleMinecarts.render(context, mouseX, mouseY, delta);
