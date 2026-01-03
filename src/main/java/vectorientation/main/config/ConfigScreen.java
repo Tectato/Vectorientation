@@ -2,12 +2,14 @@ package vectorientation.main.config;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import vectorientation.main.Vectorientation;
@@ -109,7 +111,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderBackground(context, mouseX, mouseY, delta);
+        //renderBackground(context, mouseX, mouseY, delta);
         backButton.render(context, mouseX, mouseY, delta);
         //context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
         //toggleMinecarts.render(context, mouseX, mouseY, delta);
@@ -124,23 +126,23 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button){
-        if(backButton.mouseClicked(mouseX, mouseY, button)) return true;
+    public boolean mouseClicked(Click click, boolean isDoubled){
+        if(backButton.mouseClicked(click, isDoubled)) return true;
         //if(toggleMinecarts.mouseClicked(mouseX, mouseY, button)) return true;
-        if(toggleSquish.mouseClicked(mouseX, mouseY, button)) return true;
-        if(squishMinInput.mouseClicked(mouseX,mouseY,button)) {
+        if(toggleSquish.mouseClicked(click, isDoubled)) return true;
+        if(squishMinInput.mouseClicked(click, isDoubled)) {
             setFocused(squishMinInput);
             return true;
         }
-        if(squishFactorInput.mouseClicked(mouseX,mouseY,button)) {
+        if(squishFactorInput.mouseClicked(click, isDoubled)) {
             setFocused(squishFactorInput);
             return true;
         }
-        if(blacklist.mouseClicked(mouseX, mouseY, button)){
+        if(blacklist.mouseClicked(click, isDoubled)){
             setFocused(blacklist);
             return true;
         }
-        return super.mouseClicked(mouseX,mouseY,button);
+        return super.mouseClicked(click, isDoubled);
     }
 
     @Override
@@ -150,8 +152,8 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char chr, int keyCode) {
-        if(blacklist.charTyped(chr, keyCode)) return true;
-        return super.charTyped(chr, keyCode);
+    public boolean charTyped(CharInput input) {
+        if(blacklist.charTyped(input)) return true;
+        return super.charTyped(input);
     }
 }

@@ -32,11 +32,11 @@ public abstract class InteractiveScrollableWidget extends ScrollableWidget {
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.visible) {
-            context.drawBorder(this.getX(), this.getY(), this.getWidth(), this.getHeight(), Colors.WHITE);
+            context.drawStrokedRectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight(), Colors.WHITE);
             context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.width - 1, this.getY() + this.height - 1);
             this.renderContents(context, mouseX, mouseY, delta);
             context.disableScissor();
-            this.drawScrollbar(context);
+            this.drawScrollbar(context, mouseX, mouseY);
         }
     }
 

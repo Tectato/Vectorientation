@@ -1,8 +1,10 @@
 package vectorientation.mixin;
 
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.TntEntityRenderer;
 import net.minecraft.client.render.entity.state.TntEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.util.math.Vec3d;
@@ -21,11 +23,11 @@ public class TntEntityRendererMixin {
     @Inject(
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/entity/TntMinecartEntityRenderer;renderFlashingBlock(Lnet/minecraft/client/render/block/BlockRenderManager;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IZ)V"
+                    target = "Lnet/minecraft/client/render/entity/TntMinecartEntityRenderer;renderFlashingBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;IZI)V"
             ),
-            method = "Lnet/minecraft/client/render/entity/TntEntityRenderer;render(Lnet/minecraft/client/render/entity/state/TntEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+            method = "render(Lnet/minecraft/client/render/entity/state/TntEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V"
     )
-    public void addRotation(TntEntityRenderState tntEntityRenderState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+    public void addRotation(TntEntityRenderState tntEntityRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci) {
         if(!Vectorientation.TNT) return;
         Vec3d velD = ((TntEntityRenderStateAccess)tntEntityRenderState).getVelocity();
         Vector3f vel = new Vector3f((float) velD.getX(), (float) velD.getY(), (float) velD.getZ());
@@ -55,7 +57,7 @@ public class TntEntityRendererMixin {
 
     @Inject(
             at = @At("HEAD"),
-            method = "Lnet/minecraft/client/render/entity/TntEntityRenderer;updateRenderState(Lnet/minecraft/entity/TntEntity;Lnet/minecraft/client/render/entity/state/TntEntityRenderState;F)V"
+            method = "updateRenderState(Lnet/minecraft/entity/TntEntity;Lnet/minecraft/client/render/entity/state/TntEntityRenderState;F)V"
     )
     public void updateRenderState(TntEntity tntEntity, TntEntityRenderState tntEntityRenderState, float f, CallbackInfo ci){
         ((TntEntityRenderStateAccess)tntEntityRenderState).setVelocity(tntEntity.getVelocity());

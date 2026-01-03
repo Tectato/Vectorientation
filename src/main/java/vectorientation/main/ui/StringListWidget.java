@@ -1,9 +1,12 @@
 package vectorientation.main.ui;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -61,23 +64,23 @@ public class StringListWidget extends ClickableWidget {
             removeButton.render(context, mouseX, mouseY, delta);
         }
 
-        public boolean mouseClicked(double mouseX, double mouseY, int button){
-            if (removeButton.mouseClicked(mouseX, mouseY, button)) return true;
-            content.mouseClicked(mouseX, mouseY, button);
+        public boolean mouseClicked(Click click, boolean isDoubled){
+            if (removeButton.mouseClicked(click, isDoubled)) return true;
+            content.mouseClicked(click, isDoubled);
             boolean hoveringTextField =
-                    (mouseX >= content.getX())
-                    && (mouseX < content.getX() + content.getWidth())
-                    && (mouseY >= content.getY())
-                    && (mouseY < content.getY() + content.getHeight());
+                    (click.x() >= content.getX())
+                    && (click.x() < content.getX() + content.getWidth())
+                    && (click.y() >= content.getY())
+                    && (click.y() < content.getY() + content.getHeight());
             content.setFocused(hoveringTextField);
             return hoveringTextField;
         }
-        public boolean charTyped(char chr, int keyCode){
-            return content.charTyped(chr, keyCode);
+        public boolean charTyped(CharInput charInput){
+            return content.charTyped(charInput);
         }
 
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            return content.keyPressed(keyCode, scanCode, modifiers);
+        public boolean keyPressed(KeyInput keyInput) {
+            return content.keyPressed(keyInput);
         }
     }
 
@@ -196,20 +199,20 @@ public class StringListWidget extends ClickableWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button){
+    public boolean mouseClicked(Click click, boolean isDoubled){
         boolean entryClicked = false;
         int listCount = entries.size();
         for(ListEntry entry : entries){
-            if(entry.mouseClicked(mouseX, mouseY, button)) entryClicked = true;
+            if(entry.mouseClicked(click, isDoubled)) entryClicked = true;
             if(entries.size() < listCount) return true;
         }
         if(entryClicked) return true;
-        if(addButton.mouseClicked(mouseX, mouseY, button)) return true;
-        if(slider.mouseClicked(mouseX, mouseY, button)){
-            slider.onClick(mouseX, mouseY);
+        if(addButton.mouseClicked(click, isDoubled)) return true;
+        if(slider.mouseClicked(click, isDoubled)){
+            slider.onClick(click, isDoubled);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, isDoubled);
     }
 
     @Override
@@ -219,17 +222,17 @@ public class StringListWidget extends ClickableWidget {
     }
 
     @Override
-    public boolean charTyped(char chr, int keyCode) {
+    public boolean charTyped(CharInput input) {
         for(ListEntry entry : entries){
-            if(entry.charTyped(chr, keyCode)) return true;
+            if(entry.charTyped(input)) return true;
         }
         return false;
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput keyInput) {
         for(ListEntry entry : entries){
-            if(entry.keyPressed(keyCode, scanCode, modifiers)) return true;
+            if(entry.keyPressed(keyInput)) return true;
         }
         return false;
     }

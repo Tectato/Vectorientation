@@ -55,18 +55,18 @@ public class MinecartRendererMixin<T extends AbstractMinecartEntity> {
         if (translate) matrixStack.translate(-0.0D, -0.5D, -0.0D);
     }*/
 
-    private boolean isOnRail(T minecart){
+    /*private boolean isOnRail(T minecart){
         int posX = MathHelper.floor(minecart.getX());
         int posY = MathHelper.floor(minecart.getY());
         int posZ = MathHelper.floor(minecart.getZ());
-        if (minecart.getWorld().getBlockState(new BlockPos(posX, posY - 1, posZ)).isIn(BlockTags.RAILS)) {
+        if (minecart.getEntityWorld().getBlockState(new BlockPos(posX, posY - 1, posZ)).isIn(BlockTags.RAILS)) {
             --posZ;
         }
 
-        BlockState blockState = minecart.getWorld().getBlockState(new BlockPos(posX, posY, posZ));
+        BlockState blockState = minecart.getEntityWorld().getBlockState(new BlockPos(posX, posY, posZ));
         if (AbstractRailBlock.isRail(blockState)) {
             return true;
         }
         return false;
-    }
+    }*/
 }

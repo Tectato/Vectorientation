@@ -1,6 +1,8 @@
 package vectorientation.mixin;
 
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.state.FallingBlockEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.registry.Registries;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
@@ -23,18 +25,22 @@ public class FallingBlockRendererMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/render/block/BlockModelRenderer;render(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/model/BlockStateModel;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;Lnet/fabricmc/fabric/api/renderer/v1/render/BlockVertexConsumerProvider;ZJI)V"
-					),
-			method = "render(Lnet/minecraft/client/render/entity/state/FallingBlockEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+					target = "Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;submitMovingBlock(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/block/MovingBlockRenderState;)V"
+			),
+			method = "render(Lnet/minecraft/client/render/entity/state/FallingBlockEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V"
 			)
-	public void addRotation(FallingBlockEntityRenderState fallingBlockEntityRenderState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+	public void addRotation(FallingBlockEntityRenderState fallingBlockEntityRenderState,
+							MatrixStack matrixStack,
+							OrderedRenderCommandQueue orderedRenderCommandQueue,
+							CameraRenderState cameraRenderState,
+							CallbackInfo ci) {
 		Vec3d velD = ((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).getVelocity();
 		Vector3f vel = new Vector3f((float) velD.getX(), (float) velD.getY(), (float) velD.getZ());
 		float y = vel.y();
 		y -= .04D * ((FallingBlockEntityRenderStateAccess)fallingBlockEntityRenderState).getGravity();
 		y *= .98D;
 		vel.y = y;
-		boolean blacklisted = Vectorientation.BLACKLIST.contains(Registries.BLOCK.getId(fallingBlockEntityRenderState.blockState.getBlock()));
+		boolean blacklisted = Vectorientation.BLACKLIST.contains(Registries.BLOCK.getId(fallingBlockEntityRenderState.movingBlockRenderState.blockState.getBlock()));
 		float speed = (!blacklisted && Vectorientation.SQUETCH) ?
 				(float) (Vectorientation.MIN_WARP + Vectorientation.WARP_FACTOR * vel.length())
 				: 1.0f;
