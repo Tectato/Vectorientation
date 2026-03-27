@@ -1,17 +1,17 @@
 package vectorientation.main.ui;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ScrollableWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
 
-public abstract class InteractiveScrollableWidget extends ScrollableWidget {
+public abstract class InteractiveScrollableWidget extends AbstractScrollArea {
 
     private java.util.function.Consumer<Double> changedListener;
 
-    public InteractiveScrollableWidget(int i, int j, int k, int l, Text text) {
+    public InteractiveScrollableWidget(int i, int j, int k, int l, Component text) {
         super(i, j, k, l, text);
     }
 
@@ -20,33 +20,33 @@ public abstract class InteractiveScrollableWidget extends ScrollableWidget {
     }
 
     @Override
-    public void setScrollY(double scrollY) {
-        super.setScrollY(scrollY);
-        changedListener.accept(getScrollY());
+    public void setScrollAmount(double scrollY) {
+        super.setScrollAmount(scrollY);
+        changedListener.accept(scrollAmount());
     }
 
-    public double getScrollY(){
-        return super.getScrollY();
+    public double scrollAmount(){
+        return super.scrollAmount();
     }
 
     @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (this.visible) {
-            context.drawStrokedRectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight(), Colors.WHITE);
+            context.submitOutline(this.getX(), this.getY(), this.getWidth(), this.getHeight(), CommonColors.WHITE);
             context.enableScissor(this.getX() + 1, this.getY() + 1, this.getX() + this.width - 1, this.getY() + this.height - 1);
             this.renderContents(context, mouseX, mouseY, delta);
             context.disableScissor();
-            this.drawScrollbar(context, mouseX, mouseY);
+            this.renderScrollbar(context, mouseX, mouseY);
         }
     }
 
 
     @Override
-    protected abstract int getContentsHeightWithPadding();
+    protected abstract int contentHeight();
     @Override
-    protected abstract double getDeltaYPerScroll();
+    protected abstract double scrollRate();
 
-    protected abstract void renderContents(DrawContext context, int mouseX, int mouseY, float delta);
+    protected abstract void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta);
     @Override
-    protected abstract void appendClickableNarrations(NarrationMessageBuilder builder);
+    protected abstract void updateWidgetNarration(NarrationElementOutput builder);
 }

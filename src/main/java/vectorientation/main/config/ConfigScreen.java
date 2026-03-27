@@ -1,48 +1,48 @@
 package vectorientation.main.config;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import vectorientation.main.Vectorientation;
 import vectorientation.main.ui.StringListWidget;
 
 public class ConfigScreen extends Screen {
 
-    private ButtonWidget backButton;
-    private CheckboxWidget toggleSquish;//, toggleMinecarts;
-    private TextFieldWidget squishMinInput, squishFactorInput;
+    private Button backButton;
+    private Checkbox toggleSquish;//, toggleMinecarts;
+    private EditBox squishMinInput, squishFactorInput;
     private StringListWidget blacklist;
     private Screen parent;
 
-    protected ConfigScreen(Text title) {
+    protected ConfigScreen(Component title) {
         super(title);
         setup();
     }
 
-    public ConfigScreen(Screen parent, MinecraftClient client, int width, int height) {
-        super(Text.of("Vectorientation Config"));
+    public ConfigScreen(Screen parent, Minecraft client, int width, int height) {
+        super(Component.nullToEmpty("Vectorientation Config"));
         this.parent = parent;
         init(client, width, height);
         setup();
     }
 
     @Override
-    public void close() {
-        if (parent != null && client != null) {
+    public void onClose() {
+        if (parent != null && minecraft != null) {
             if(blacklist.getChanged()){
                 Vectorientation.setConfig(Vectorientation.VAR_BLACKLIST, blacklist.getList());
             }
             Vectorientation.writeConfig();
-            client.setScreen(parent);
+            minecraft.setScreen(parent);
         }
     }
 
@@ -51,9 +51,9 @@ public class ConfigScreen extends Screen {
         int posY = 32;
 
         if (parent != null ) {
-            backButton = ButtonWidget.builder(ScreenTexts.BACK, button -> close()).dimensions(8,8,50,20).build();
+            backButton = Button.builder(CommonComponents.GUI_BACK, button -> onClose()).bounds(8,8,50,20).build();
         }
-        addDrawableChild(backButton);
+        addRenderableWidget(backButton);
         /*toggleMinecarts = CheckboxWidget.builder(Text.of(""), textRenderer)
                 .pos(posX, posY)
                 .checked(Vectorientation.MINECARTS)
@@ -66,20 +66,20 @@ public class ConfigScreen extends Screen {
                 })
                 .build();
         posY += 24;*/
-        toggleSquish = CheckboxWidget.builder(Text.of(""), textRenderer)
+        toggleSquish = Checkbox.builder(Component.nullToEmpty(""), font)
                 .pos(posX, posY)
-                .checked(Vectorientation.SQUETCH)
-                .callback(new CheckboxWidget.Callback() {
+                .selected(Vectorientation.SQUETCH)
+                .onValueChange(new Checkbox.OnValueChange() {
                     @Override
-                    public void onValueChange(CheckboxWidget checkbox, boolean checked) {
+                    public void onValueChange(Checkbox checkbox, boolean checked) {
                         Vectorientation.setConfig(Vectorientation.VAR_SQUETCH, ""+checked);
                     }
                 })
                 .build();
         posY += 24;
-        squishMinInput = new TextFieldWidget(textRenderer, posX, posY, 64, 12, Text.of(""));
-        squishMinInput.setText(""+Vectorientation.MIN_WARP);
-        squishMinInput.setChangedListener((string)->{
+        squishMinInput = new EditBox(font, posX, posY, 64, 12, Component.nullToEmpty(""));
+        squishMinInput.setValue(""+Vectorientation.MIN_WARP);
+        squishMinInput.setResponder((string)->{
             try {
                 double inputDouble = Math.min(Math.max(Double.parseDouble(string),-8.0),8.0);
                 Vectorientation.setConfig(Vectorientation.VAR_MIN_WARP, String.valueOf(inputDouble));
@@ -88,9 +88,9 @@ public class ConfigScreen extends Screen {
             }
         });
         posY += 16;
-        squishFactorInput = new TextFieldWidget(textRenderer, posX, posY, 64, 12, Text.of(""));
-        squishFactorInput.setText(""+Vectorientation.WARP_FACTOR);
-        squishFactorInput.setChangedListener((string)->{
+        squishFactorInput = new EditBox(font, posX, posY, 64, 12, Component.nullToEmpty(""));
+        squishFactorInput.setValue(""+Vectorientation.WARP_FACTOR);
+        squishFactorInput.setResponder((string)->{
             try {
                 double inputDouble = Math.min(Math.max(Double.parseDouble(string),-8.0),8.0);
                 Vectorientation.setConfig(Vectorientation.VAR_WARP_FACTOR, String.valueOf(inputDouble));
@@ -99,34 +99,34 @@ public class ConfigScreen extends Screen {
             }
         });
         posY += 30;
-        blacklist = new StringListWidget(textRenderer, 4, posY, width/2, height - (posY + 4), Text.of(""));
+        blacklist = new StringListWidget(font, 4, posY, width/2, height - (posY + 4), Component.nullToEmpty(""));
         blacklist.setEntries(Vectorientation.BLACKLIST);
-        addDrawableChild(blacklist);
+        addRenderableWidget(blacklist);
 
         //addDrawableChild(toggleMinecarts);
-        addDrawableChild(toggleSquish);
-        addDrawableChild(squishMinInput);
-        addDrawableChild(squishFactorInput);
+        addRenderableWidget(toggleSquish);
+        addRenderableWidget(squishMinInput);
+        addRenderableWidget(squishFactorInput);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         //renderBackground(context, mouseX, mouseY, delta);
         backButton.render(context, mouseX, mouseY, delta);
         //context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
         //toggleMinecarts.render(context, mouseX, mouseY, delta);
-        context.drawTextWithShadow(textRenderer, "Enable Squash & stretch:", 8, toggleSquish.getY() + 4, 0xFFFFFFFF);
+        context.drawString(font, "Enable Squash & stretch:", 8, toggleSquish.getY() + 4, 0xFFFFFFFF);
         toggleSquish.render(context, mouseX, mouseY, delta);
-        context.drawTextWithShadow(textRenderer, "Vertical squish at 0 velocity:", 8, squishMinInput.getY(), 0xFFFFFFFF);
+        context.drawString(font, "Vertical squish at 0 velocity:", 8, squishMinInput.getY(), 0xFFFFFFFF);
         squishMinInput.render(context, mouseX, mouseY, delta);
-        context.drawTextWithShadow(textRenderer, "Amount of squish increase with velocity:", 8, squishFactorInput.getY(), 0xFFFFFFFF);
+        context.drawString(font, "Amount of squish increase with velocity:", 8, squishFactorInput.getY(), 0xFFFFFFFF);
         squishFactorInput.render(context, mouseX, mouseY, delta);
-        context.drawTextWithShadow(textRenderer, "Blocks that should not squish:", 8, blacklist.getY() - 12, 0xFFFFFFFF);
+        context.drawString(font, "Blocks that should not squish:", 8, blacklist.getY() - 12, 0xFFFFFFFF);
         blacklist.render(context, mouseX, mouseY, delta);
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean isDoubled){
+    public boolean mouseClicked(MouseButtonEvent click, boolean isDoubled){
         if(backButton.mouseClicked(click, isDoubled)) return true;
         //if(toggleMinecarts.mouseClicked(mouseX, mouseY, button)) return true;
         if(toggleSquish.mouseClicked(click, isDoubled)) return true;
@@ -152,7 +152,7 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
+    public boolean charTyped(CharacterEvent input) {
         if(blacklist.charTyped(input)) return true;
         return super.charTyped(input);
     }

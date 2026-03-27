@@ -1,10 +1,10 @@
 package vectorientation.access;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.phys.Vec3;
 
 public interface TntEntityRenderStateAccess {
-    void setVelocity(Vec3d velocity);
-    Vec3d getVelocity();
+    void setVelocity(Vec3 velocity);
+    Vec3 getVelocity();
 
     void setGravity(double mag);
     double getGravity();

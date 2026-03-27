@@ -6,10 +6,10 @@
   "mixins": [
   ],
   "client": [
-    "FallingBlockEntityRenderStateMixin",
+    "FallingBlockRenderStateMixin",
     "FallingBlockRendererMixin",
-    "TntEntityRenderStateMixin",
-    "TntEntityRendererMixin"
+    "TntRenderStateMixin",
+    "TntRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

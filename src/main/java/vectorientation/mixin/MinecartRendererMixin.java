@@ -1,16 +1,16 @@
 package vectorientation.mixin;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.MinecartEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.TntEntity;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import vectorientation.main.Vectorientation;
 
-@Mixin(MinecartEntityRenderer.class)
-public class MinecartRendererMixin<T extends AbstractMinecartEntity> {
+@Mixin(MinecartRenderer.class)
+public class MinecartRendererMixin<T extends AbstractMinecart> {
     /*@Inject(
             at = @At(
                     value = "INVOKE",

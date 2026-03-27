@@ -1,27 +1,27 @@
 package vectorientation.mixin;
 
-import net.minecraft.client.render.entity.state.TntEntityRenderState;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.entity.state.TntRenderState;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import vectorientation.access.TntEntityRenderStateAccess;
 
-@Mixin(TntEntityRenderState.class)
-public class TntEntityRenderStateMixin implements TntEntityRenderStateAccess {
+@Mixin(TntRenderState.class)
+public class TntRenderStateMixin implements TntEntityRenderStateAccess {
     @Unique
-    Vec3d velocity = Vec3d.ZERO;
+    Vec3 velocity = Vec3.ZERO;
     @Unique
     double gravity = 9.81f / 20.0f;
     @Unique
     boolean onGround = false;
 
     @Override
-    public void setVelocity(Vec3d velocity) {
+    public void setVelocity(Vec3 velocity) {
         this.velocity = velocity;
     }
 
     @Override
-    public Vec3d getVelocity(){
+    public Vec3 getVelocity(){
         return this.velocity;
     }
 

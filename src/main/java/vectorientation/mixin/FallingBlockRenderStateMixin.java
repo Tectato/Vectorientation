@@ -1,25 +1,25 @@
 package vectorientation.mixin;
 
-import net.minecraft.client.render.entity.state.FallingBlockEntityRenderState;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.entity.state.FallingBlockRenderState;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import vectorientation.access.FallingBlockEntityRenderStateAccess;
 
-@Mixin(FallingBlockEntityRenderState.class)
-public class FallingBlockEntityRenderStateMixin implements FallingBlockEntityRenderStateAccess {
+@Mixin(FallingBlockRenderState.class)
+public class FallingBlockRenderStateMixin implements FallingBlockEntityRenderStateAccess {
     @Unique
-    Vec3d velocity = Vec3d.ZERO;
+    Vec3 velocity = Vec3.ZERO;
     @Unique
     double gravity = 9.81f / 20.0f;
 
     @Override
-    public void setVelocity(Vec3d velocity) {
+    public void setVelocity(Vec3 velocity) {
         this.velocity = velocity;
     }
 
     @Override
-    public Vec3d getVelocity(){
+    public Vec3 getVelocity(){
         return this.velocity;
     }
 
