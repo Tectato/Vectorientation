@@ -2,8 +2,8 @@ package vectorientation.main.config;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.Button;
@@ -31,7 +31,7 @@ public class ConfigScreen extends Screen {
     public ConfigScreen(Screen parent, Minecraft client, int width, int height) {
         super(Component.nullToEmpty("Vectorientation Config"));
         this.parent = parent;
-        init(client, width, height);
+        init(width, height);
         setup();
     }
 
@@ -110,19 +110,19 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         //renderBackground(context, mouseX, mouseY, delta);
-        backButton.render(context, mouseX, mouseY, delta);
+        backButton.extractRenderState(graphics, mouseX, mouseY, delta);
         //context.drawTextWithShadow(textRenderer, "Affect Minecarts:", 8, toggleMinecarts.getY() + 4, 0xFFFFFFFF);
         //toggleMinecarts.render(context, mouseX, mouseY, delta);
-        context.drawString(font, "Enable Squash & stretch:", 8, toggleSquish.getY() + 4, 0xFFFFFFFF);
-        toggleSquish.render(context, mouseX, mouseY, delta);
-        context.drawString(font, "Vertical squish at 0 velocity:", 8, squishMinInput.getY(), 0xFFFFFFFF);
-        squishMinInput.render(context, mouseX, mouseY, delta);
-        context.drawString(font, "Amount of squish increase with velocity:", 8, squishFactorInput.getY(), 0xFFFFFFFF);
-        squishFactorInput.render(context, mouseX, mouseY, delta);
-        context.drawString(font, "Blocks that should not squish:", 8, blacklist.getY() - 12, 0xFFFFFFFF);
-        blacklist.render(context, mouseX, mouseY, delta);
+        graphics.text(font, "Enable Squash & stretch:", 8, toggleSquish.getY() + 4, 0xFFFFFFFF);
+        toggleSquish.extractRenderState(graphics, mouseX, mouseY, delta);
+        graphics.text(font, "Vertical squish at 0 velocity:", 8, squishMinInput.getY(), 0xFFFFFFFF);
+        squishMinInput.extractRenderState(graphics, mouseX, mouseY, delta);
+        graphics.text(font, "Amount of squish increase with velocity:", 8, squishFactorInput.getY(), 0xFFFFFFFF);
+        squishFactorInput.extractRenderState(graphics, mouseX, mouseY, delta);
+        graphics.text(font, "Blocks that should not squish:", 8, blacklist.getY() - 12, 0xFFFFFFFF);
+        blacklist.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 
     @Override

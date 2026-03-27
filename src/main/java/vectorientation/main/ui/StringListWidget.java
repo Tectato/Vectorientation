@@ -1,17 +1,18 @@
 package vectorientation.main.ui;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -61,9 +62,9 @@ public class StringListWidget extends AbstractWidget {
             return content.getValue();
         }
 
-        public void render(GuiGraphics context, int mouseX, int mouseY, float delta){
-            content.render(context, mouseX, mouseY, delta);
-            removeButton.render(context, mouseX, mouseY, delta);
+        public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta){
+            content.extractRenderState(graphics, mouseX, mouseY, delta);
+            removeButton.extractRenderState(graphics, mouseX, mouseY, delta);
         }
 
         public boolean mouseClicked(MouseButtonEvent click, boolean isDoubled){
@@ -97,7 +98,7 @@ public class StringListWidget extends AbstractWidget {
         this.textRenderer = textRenderer;
         entries = new LinkedList<>();
         addButton = Button.builder(Component.nullToEmpty("[+]"), button -> add("")).bounds(x + 2, y + height - 17, 30, 16).build();
-        slider = new InteractiveScrollableWidget(x , y, width, height, Component.nullToEmpty("")) {
+        slider = new InteractiveScrollableWidget(x , y, width, height, Component.nullToEmpty(""), AbstractScrollArea.defaultSettings(1)) {
 
             @Override
             protected void updateWidgetNarration(NarrationElementOutput builder) {
@@ -115,11 +116,11 @@ public class StringListWidget extends AbstractWidget {
             }
 
             @Override
-            protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+            protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
                 for(ListEntry entry : entries){
-                    entry.render(context, mouseX, mouseY, delta);
+                    entry.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
                 }
-                addButton.render(context, mouseX, mouseY, delta);
+                addButton.extractRenderState(graphics, mouseX, mouseY, delta);
             }
         };
         slider.setChangedListener((value)->{
@@ -134,15 +135,15 @@ public class StringListWidget extends AbstractWidget {
     public void setEntries(String list){
         String[] textEntries = list.replace(" ","").split(",");
         for(String entry : textEntries){
-            ResourceLocation identifier = ResourceLocation.parse(entry);
+            Identifier identifier = Identifier.parse(entry);
             if(BuiltInRegistries.BLOCK.containsKey(identifier)){
                 add(entry);
             }
         }
     }
 
-    public void setEntries(HashSet<ResourceLocation> set){
-        for(ResourceLocation block : set){
+    public void setEntries(HashSet<Identifier> set){
+        for(Identifier block : set){
             add(block.toString().replace(block.getNamespace()+":", ""));
         }
     }
@@ -191,8 +192,8 @@ public class StringListWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        slider.render(context, mouseX, mouseY, delta);
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        slider.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 
     @Override

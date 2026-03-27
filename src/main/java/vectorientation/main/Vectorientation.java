@@ -3,14 +3,14 @@ package vectorientation.main;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import vectorientation.main.config.SimpleConfig;
 
 import java.util.HashSet;
 
 public class Vectorientation implements ClientModInitializer {
 	private static SimpleConfig CONFIG = SimpleConfig.of( "vectorientation" ).provider( Vectorientation::provider ).request();
-	public static ResourceLocation TNT_ID = ResourceLocation.parse("minecraft:tnt");
+	public static Identifier TNT_ID = Identifier.parse("minecraft:tnt");
 
 	public static String VAR_SQUETCH = "squetch";
 	public static String VAR_MIN_WARP = "min_warp";
@@ -22,7 +22,7 @@ public class Vectorientation implements ClientModInitializer {
 	public static double MIN_WARP = CONFIG.getOrDefault(VAR_MIN_WARP, 0.75d);
 	public static double WARP_FACTOR = CONFIG.getOrDefault(VAR_WARP_FACTOR, 1.0d);
 	private static String BLACKLIST_STRING = CONFIG.getOrDefault(VAR_BLACKLIST, "anvil,chipped_anvil,damaged_anvil");
-	public static HashSet<ResourceLocation> BLACKLIST;
+	public static HashSet<Identifier> BLACKLIST;
 	public static boolean MINECARTS =  CONFIG.getOrDefault(VAR_MINECARTS, false);
 	public static boolean TNT = true;
 	
@@ -40,7 +40,7 @@ public class Vectorientation implements ClientModInitializer {
 		BLACKLIST = new HashSet<>();
 		String[] entries = BLACKLIST_STRING.replace(" ","").split(",");
 		for(String entry : entries){
-			ResourceLocation identifier = ResourceLocation.parse(entry);
+			Identifier identifier = Identifier.parse(entry);
 			if(BuiltInRegistries.BLOCK.containsKey(identifier)){
 				BLACKLIST.add(identifier);
 			} else {
