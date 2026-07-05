@@ -42,7 +42,7 @@ public class ConfigScreen extends Screen {
                 Vectorientation.setConfig(Vectorientation.VAR_BLACKLIST, blacklist.getList());
             }
             Vectorientation.writeConfig();
-            minecraft.setScreen(parent);
+            minecraft.gui.setScreen(parent);
         }
     }
 
