@@ -51,7 +51,7 @@ public class FallingBlockRendererMixin {
 			rot = new Quaternionf(new AxisAngle4f(-angle, axis));
 		}
 		matrixStack.translate(0.5D, 0.5D, 0.5D);
-		matrixStack.mulPose(rot);
+		matrixStack.rotate(rot);
 		matrixStack.scale(1/speed, speed, 1/speed);
 		matrixStack.translate(-0.5D, -0.5D, -0.5D);
 	}
